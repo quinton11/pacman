@@ -35,10 +35,34 @@ class MazeScheme {
     "X XXXXXX         XX XX  XXXXXXXXXXX XXX          X",
     "X         XXXXXX                        XXXXXXXXXX",
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-
-
-
-
-
   ];
+
+  List<List<int>> mazeBinary = [];
+  int lengthRow = 0;
+  int lengthCol = 0;
+
+  void mazeToBinary() {
+    String row;
+    String point;
+    lengthRow = maze.length;
+    for (int i = 0; i < maze.length; i++) {
+      row = maze[i];
+      lengthCol = row.length;
+      mazeBinary.insert(i, []);
+      for (int j = 0; j < row.length; j++) {
+        point = row[j];
+        if (point == "X") {
+          //barrier
+          mazeBinary[i].insert(j, 0);
+        } else {
+          mazeBinary[i].insert(j, 1);
+        }
+      }
+    }
+    print("Converted scheme");
+    /* Calculate the length of each item in a row 
+    Use that length to determine the sizing of each wall vector to fit the width and height
+    of screen well
+    Then after constructing list of positional components, then we render them */
+  }
 }
