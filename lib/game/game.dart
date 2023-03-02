@@ -3,13 +3,11 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:pacman/game/entities/maze.dart';
 
-import 'package:pacman/game/entities/pac.dart';
-
-class PacGame extends FlameGame with HasTappables {
+class PacGame extends FlameGame
+    with HasTappables, HasKeyboardHandlerComponents, HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     //Init all init-ables :)
-    add(PacMan());
     add(Maze());
   }
 

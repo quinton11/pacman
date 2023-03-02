@@ -33,7 +33,7 @@ class MazeScheme {
     "XXXXXXXX XXX XX XX XXXXXXXXXXXXXXXX XXXXXXXXXXXX X",
     "X        XXX XX XX            XXXXX     XXXXXXXX X",
     "X XXXXXX         XX XX  XXXXXXXXXXX XXX          X",
-    "X         XXXXXX                        XXXXXXXX X",
+    "X         XXXXXX                       PXXXXXXXX X",
     "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX X",
   ];
 
@@ -54,6 +54,8 @@ class MazeScheme {
         if (point == "X") {
           //barrier
           mazeBinary[i].insert(j, 0);
+        } else if (point == "P") {
+          mazeBinary[i].insert(j, 2);
         } else {
           mazeBinary[i].insert(j, 1);
         }
