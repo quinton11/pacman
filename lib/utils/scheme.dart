@@ -1,26 +1,26 @@
 class MazeScheme {
   List<String> maze = [
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX X",
     "X              XX               XX               X",
-    "X XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXXXX",
-    "X X          X                                    ",
+    "X XXXXXXXXXXXX XXXX XXXXXX XXXX XXXXX XXXXXX XXX X",
+    "  X          X                                    ",
     "X X XXXXXXXX X X XXX XXX XXX XXX XXXXXXXXXXXXX X X",
     "X X X      X X X X X XXX X X X X X           X X X",
     "X X XXXXXX X X X X X     X X X X X XXXXXXXXX X X X",
     "X X      X X X X X XXXXXXX X X X X X       X X X X",
     "X XXXXXXXX X X X XXXXXXXXXXX XXX X X XXXXX X X X X",
     "X          X X X                 XXX       XXX X X",
-    "XXXXXXXXXX X X XXXXXXXXXXXXX XXXXXXXXXXXXX XXXXXXX",
+    "XXX XXXXXX X X X XXXXX XXXXX XXX XXX XXXXX XXXXXXX",
     "X          XXX                         XXX       X",
     "X XXXXXX X      XXXXXXXXXXXXXXXXXXXXX      XXXXX X",
     "X        XX XXX XXXXXXXXXXXXXXXXXXXXX XXX        X",
-    "X XXXXXX XX XXX XXX               XXX XXX XXXXXX X",
-    "X        XX XXX XXX               XXX XXX        X",
+    "X XXXXXX XX X X XXX               XXX X X XXXXXX X",
+    "X        XX X X XXX               XXX X X        X",
     "X XXXXXX XX XXX XXX               XXX XXX XXXXXX X",
     "X               XXXXXXXXXXXXXXXXXXXXX            X",
     "XXXXXXXXXXXX XX                       XXXXXXXXXXXX",
-    "X      XXXXX XXXXXX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    "X XXXX       XXXXXX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "       XXXXX XXXXXX XXXXXXXXXXX X XXXXXX          ",
+    "X XXXX       XXXXXX XXXXXXXXXXX X XXXXXX XXXXXXXXX",
     "X XX X XXX X XX                 X                X",
     "X XX XXXXX X XX XXXXXXXXXXXXXXX X X XXXXXXXXXXXX X",
     "X XX     X X    X             X X X X          X X",
@@ -33,8 +33,8 @@ class MazeScheme {
     "XXXXXXXX XXX XX XX XXXXXXXXXXXXXXXX XXXXXXXXXXXX X",
     "X        XXX XX XX            XXXXX     XXXXXXXX X",
     "X XXXXXX         XX XX  XXXXXXXXXXX XXX          X",
-    "X         XXXXXX                        XXXXXXXXXX",
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "X         XXXXXX                        XXXXXXXX X",
+    "X XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX X",
   ];
 
   List<List<int>> mazeBinary = [];
@@ -60,8 +60,10 @@ class MazeScheme {
       }
     }
     print("Converted scheme");
+    //print(maze);
+    //print(mazeBinary);
     /* Calculate the length of each item in a row 
-    Use that length to determine the sizing of each wall vector to fit the width and height
+    Use that length to determine the sizing of each wall vector to fit tRhe width and height
     of screen well
     Then after constructing list of positional components, then we render them */
   }

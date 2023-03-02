@@ -22,7 +22,7 @@ class PacMan extends PositionComponent with Tappable {
 
   @override
   void render(Canvas canvas) {
-    canvas.drawRect(size.toRect(), green);
+    //canvas.drawRect(size.toRect(), green);
     super.render(canvas);
   }
 }
