@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:pacman/game/entities/mazeblock.dart';
+import 'package:pacman/game/entities/mazespace.dart';
 import 'package:pacman/game/entities/pac.dart';
 import 'package:pacman/utils/scheme.dart';
 
@@ -13,6 +14,7 @@ class Maze extends PositionComponent with HasGameRef {
   var indigo = Paint()..color = Colors.pink.shade800;
   var black = Paint()..color = Colors.black;
   var yellow = Paint()..color = Colors.yellow.shade700;
+  var grey = Paint()..color = Colors.black54;
 
   Maze();
 
@@ -60,22 +62,36 @@ class Maze extends PositionComponent with HasGameRef {
 
       for (int j = 0; j < row.length; j++) {
         if (row[j] == 0) {
-          poscomp = MazeBlock(paint: blue, bpos: pos, bsize: siz);
+          poscomp = MazeBlock(
+            paint: blue,
+            bpos: pos,
+            bsize: siz,
+          );
           mazebar.add(poscomp);
 
           //
           add(poscomp);
         } else if (row[j] == 2) {
-          poscomp = PacMan(bpos: pos, bsize: Vector2(siz.x - 2, siz.y - 2));
+          poscomp = PacMan(
+            bpos: Vector2(pos.x, pos.y),
+            bsize: Vector2(siz.x, siz.y),
+          );
           mazebar.add(poscomp);
 
           //
           add(poscomp);
-        }
-        pos.setValues(siz.x + pos.x, pos.y);
+        } /* else if (row[j] == 1) {
+          poscomp = MazeSpace(
+              bpos: Vector2(pos.x, pos.y),
+              bsize: Vector2(siz.x, siz.y),
+              paint: grey);
+          mazebar.add(poscomp);
+          add(poscomp);
+        } */
+        pos.setValues(siz.x + pos.x + 1, pos.y);
       }
       //print(pos);
-      pos.setValues(0, pos.y + siz.y);
+      pos.setValues(0, pos.y + siz.y + 1);
     }
   }
 }

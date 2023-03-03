@@ -9,6 +9,7 @@ class PacGame extends FlameGame
   Future<void> onLoad() async {
     //Init all init-ables :)
     add(Maze());
+    //debugMode = true;
   }
 
   @override

@@ -4,18 +4,19 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 
-class MazeBlock extends PositionComponent with Tappable, CollisionCallbacks {
+class MazeSpace extends PositionComponent with Tappable, CollisionCallbacks {
   final Paint paint;
   final Vector2 bsize;
   final Vector2 bpos;
   late RectangleHitbox hitb;
 
-  MazeBlock({required this.paint, required this.bsize, required this.bpos})
+  MazeSpace({required this.paint, required this.bsize, required this.bpos})
       : super(priority: 2);
 
   @override
   bool onTapDown(TapDownInfo info) {
     super.onTapDown(info);
+    print(toString());
     print("Tapped ${position} , ${size}");
 
     return true;
