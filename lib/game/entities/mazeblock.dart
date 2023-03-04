@@ -32,6 +32,8 @@ class MazeBlock extends PositionComponent with Tappable, CollisionCallbacks {
     size = bsize;
     position = bpos;
     hitb = RectangleHitbox();
+    hitb.collisionType = CollisionType.passive;
+
     add(hitb);
   }
 

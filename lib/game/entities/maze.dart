@@ -10,6 +10,8 @@ import 'package:pacman/utils/scheme.dart';
 class Maze extends PositionComponent with HasGameRef {
   late MazeScheme scheme;
   List<PositionComponent> mazebar = [];
+  static List<PositionComponent> mazespace = [];
+
   var blue = Paint()..color = Colors.blue.shade800;
   var indigo = Paint()..color = Colors.pink.shade800;
   var black = Paint()..color = Colors.black;
@@ -29,9 +31,6 @@ class Maze extends PositionComponent with HasGameRef {
     anchor = Anchor.topLeft;
     print(game.size);
     print(game.canvasSize);
-    /* test.position = Vector2(position.x + size.x / 2, position.y + size.y / 2);
-    test.anchor = Anchor.center;
-    test.size = Vector2(30, 30); */
 
     size = Vector2(600, 380);
     double sizesubx = (game.size.x / 2) - (size.x / 2);
@@ -75,19 +74,20 @@ class Maze extends PositionComponent with HasGameRef {
           poscomp = PacMan(
             bpos: Vector2(pos.x, pos.y),
             bsize: Vector2(siz.x, siz.y),
+            mazePos: position,
           );
           mazebar.add(poscomp);
 
           //
           add(poscomp);
-        } /* else if (row[j] == 1) {
+        } else if (row[j] == 1) {
           poscomp = MazeSpace(
               bpos: Vector2(pos.x, pos.y),
               bsize: Vector2(siz.x, siz.y),
               paint: grey);
-          mazebar.add(poscomp);
-          add(poscomp);
-        } */
+          mazespace.add(poscomp);
+          //add(poscomp);
+        }
         pos.setValues(siz.x + pos.x + 1, pos.y);
       }
       //print(pos);
