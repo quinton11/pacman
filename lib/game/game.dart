@@ -8,20 +8,18 @@ import 'package:pacman/game/entities/maze.dart';
 
 class PacGame extends FlameGame
     with HasTappables, HasKeyboardHandlerComponents, HasCollisionDetection {
-      
   @override
   Future<void> onLoad() async {
     //Init all init-ables :)
     add(Maze());
-    
+
     //debugMode = true;
   }
 
-  
   @override
   Color backgroundColor() {
     // TODO: implement backgroundColor
-    return Colors.grey.shade700;
+    return Colors.black;
   }
 
   /* @override

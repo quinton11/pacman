@@ -7,7 +7,9 @@ import 'package:flame/collisions.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pacman/game/entities/cookie.dart';
 import 'package:pacman/game/entities/maze.dart';
+import 'package:pacman/game/entities/mazeblock.dart';
 import 'package:pacman/game/entities/mazespace.dart';
 
 enum Direction {
@@ -33,33 +35,24 @@ class PacMan extends PositionComponent
   final Vector2 bsize;
   final Vector2 bpos;
   final Vector2 mazePos;
+  final Vector2 mazeSize;
   bool collided = false;
-  bool move = false;
+  bool move = true;
+  bool start = true;
   double delta = 0;
   late Direction direction = Direction.def;
   late Direction prevDirection = Direction.def;
 
-  double speed = 50;
+  double speed = 55;
 
   late RectangleHitbox hitb;
   late CollideSide collideSide = CollideSide.def;
-  PacMan({required this.bsize, required this.bpos, required this.mazePos})
+  PacMan(
+      {required this.bsize,
+      required this.bpos,
+      required this.mazePos,
+      required this.mazeSize})
       : super(priority: 3);
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    /* if (!collided) {
-      print("Collided");
-      collided = true;
-      print(intersectionPoints);
-      print(other.position);
-      print(position);
-      //print(hitb.position);
-      print(mazePos);
-      //print(game.size);
-    } */
-    super.onCollision(intersectionPoints, other);
-  }
 
   bool topCollision(PositionComponent other, Vector2 point, double errMargin) {
     double pWorldY = position.y + mazePos.y;
@@ -117,85 +110,112 @@ class PacMan extends PositionComponent
   @override
   void onCollisionStart(
       Set<Vector2> intersectionPoints, PositionComponent other) {
-    print("On Collision Start");
-    double errorMargin = 1.2;
-    double offset = .5;
+    double errorMargin = 2;
+    double offset = 1.8;
+    double hitoff = 2;
     bool inCentre = false;
-    intersectionPoints.forEach((point) {
-      //top
-      if (topCollision(other, point, errorMargin)) {
-        print("Player collided top");
-        print(direction.toString());
-        print(prevDirection.toString());
-        position.setValues(position.x, position.y + offset);
+    if (other is MazeBlock) {
+      print("On Collision Start");
+      Vector2 point;
+      for (int i = 0; i < intersectionPoints.length; i++) {
+        point = intersectionPoints.elementAt(i);
+        if (topCollision(other, point, errorMargin)) {
+          print("Player collided top");
+          //move = false;
+          //break;
+          offset = other.position.y + other.size.y + 1;
+          inCentre = (position.x + size.x / 2) >=
+                  (other.position.x + other.size.x / 2 - hitoff) &&
+              (position.x + size.x / 2) <=
+                  (other.position.x + other.size.x / 2 + hitoff);
+          if (inCentre) {
+            print("In centre");
+            move = false;
+            collided = true;
+          } else {
+            direction = prevDirection;
+          }
+          position.setValues(position.x, offset);
 
-        //move = false;
-        inCentre = (position.x + size.x / 2) >=
-                (other.position.x + other.size.x / 2 - 1) &&
-            (position.x + size.x / 2) <=
-                (other.position.x + other.size.x / 2 + 1);
-        if (inCentre) {
-          print("In centre");
-          move = false;
-        } else {
-          direction = prevDirection;
-        }
-      } else if (bottomCollision(other, point, errorMargin)) {
-        position.setValues(position.x, position.y - offset);
+          break;
+        } else if (bottomCollision(other, point, errorMargin)) {
+          print("Player collided bottom");
+          //move = false;
+          //break;
+          offset = other.position.y - other.size.y - 1;
 
-        print("Player collided bottom");
-        print(direction.toString());
-        print(prevDirection.toString());
-        //move = false;
-        inCentre = (position.x + size.x / 2) >=
-                (other.position.x + other.size.x / 2 - 1) &&
-            (position.x + size.x / 2) <=
-                (other.position.x + other.size.x / 2 + 1);
-        if (inCentre) {
-          print("In centre");
-          move = false;
-        } else {
-          direction = prevDirection;
-        }
-      } else if (rightCollision(other, point, errorMargin)) {
-        print("Player collided right");
-        print(direction.toString());
-        print(prevDirection.toString());
-        position.setValues(position.x - offset, position.y);
-        move = false;
+          inCentre = (position.x + size.x / 2) >=
+                  (other.position.x + other.size.x / 2 - hitoff) &&
+              (position.x + size.x / 2) <=
+                  (other.position.x + other.size.x / 2 + hitoff);
+          if (inCentre) {
+            print("In centre");
+            move = false;
+            collided = true;
+          } else {
+            direction = prevDirection;
+          }
+          position.setValues(position.x, offset);
 
-        inCentre = (position.y + size.y / 2) >=
-                (other.position.y + other.size.y / 2 - 1) &&
-            (position.y + size.y / 2) <=
-                (other.position.y + other.size.y / 2 + 1);
-        if (inCentre) {
-          print("In centre");
-          move = false;
-        } else {
-          direction = prevDirection;
-        }
+          break;
+        } else if (rightCollision(other, point, errorMargin)) {
+          print("Player collided right");
+          //move = false;
+          //break;
+          offset = other.position.x - other.size.x - 1;
 
-        /* Check if position center x is within +-.5 of other center
+          inCentre = (position.y + size.y / 2) >=
+                  (other.position.y + other.size.y / 2 - hitoff) &&
+              (position.y + size.y / 2) <=
+                  (other.position.y + other.size.y / 2 + hitoff);
+          if (inCentre) {
+            print("In centre");
+            move = false;
+            collided = true;
+          } else {
+            direction = prevDirection;
+          }
+          position.setValues(offset, position.y);
+
+          break;
+
+          /* Check if position center x is within +-.5 of other center
         If so then set move to false else set direction to previous direction   */
-      } else if (leftCollision(other, point, errorMargin)) {
-        print("Player collided left");
-        print(direction.toString());
-        print(prevDirection.toString());
-        position.setValues(position.x + offset, position.y);
-        //move = false;
-        inCentre = (position.y + size.y / 2) >=
-                (other.position.y + other.size.y / 2 - 1) &&
-            (position.y + size.y / 2) <=
-                (other.position.y + other.size.y / 2 + 1);
-        if (inCentre) {
-          print("In centre");
-          move = false;
-        } else {
-          direction = prevDirection;
+        } else if (leftCollision(other, point, errorMargin)) {
+          print("Player collided left");
+          //move = false;
+          //break;
+          offset = other.position.x + other.size.x + 1;
+
+          inCentre = (position.y + size.y / 2) >=
+                  (other.position.y + other.size.y / 2 - hitoff) &&
+              (position.y + size.y / 2) <=
+                  (other.position.y + other.size.y / 2 + hitoff);
+          if (inCentre) {
+            print("In centre");
+            move = false;
+            collided = true;
+          } else {
+            direction = prevDirection;
+          }
+          position.setValues(offset, position.y);
+
+          break;
         }
       }
-    });
+    }
+
     super.onCollisionStart(intersectionPoints, other);
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    if (other is Cookie) {
+      parent!.remove(other);
+    } /* else {
+      collided = true;
+    } */
+    super.onCollision(intersectionPoints, other);
   }
 
   @override
@@ -209,16 +229,33 @@ class PacMan extends PositionComponent
     add(hitb);
   }
 
+  void edge() {
+    if (position.x <= 0) {
+      position.x = mazeSize.x - 1;
+    } else if (position.x + size.x >= mazeSize.x) {
+      position.x = 1;
+    } else if (position.y + size.y >= mazeSize.y) {
+      position.y = 1;
+    } else if (position.y <= 0) {
+      position.y = mazeSize.y - 1;
+    }
+  }
+
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     super.onKeyEvent(event, keysPressed);
 
     if (event.runtimeType == RawKeyDownEvent) {
-      move = true;
+      //move = true;
       switch (event.logicalKey.keyLabel) {
         case "Arrow Left":
           if (direction != Direction.left) {
+            collided = false;
+            move = true;
             prevDirection = direction;
+            print("Moving");
+
+            //viableSpace();
           }
 
           direction = Direction.left;
@@ -226,7 +263,13 @@ class PacMan extends PositionComponent
           break;
         case "Arrow Right":
           if (direction != Direction.right) {
+            collided = false;
+            move = true;
+
             prevDirection = direction;
+            print("Moving");
+
+            //viableSpace();
           }
 
           direction = Direction.right;
@@ -234,7 +277,13 @@ class PacMan extends PositionComponent
           break;
         case "Arrow Up":
           if (direction != Direction.up) {
+            collided = false;
+            move = true;
+
             prevDirection = direction;
+            print("Moving");
+
+            //viableSpace();
           }
 
           direction = Direction.up;
@@ -243,6 +292,10 @@ class PacMan extends PositionComponent
         case "Arrow Down":
           if (direction != Direction.down) {
             prevDirection = direction;
+            move = true;
+
+            print("Moving");
+            //viableSpace();
           }
 
           direction = Direction.down;
@@ -259,7 +312,10 @@ class PacMan extends PositionComponent
     double dy = 0;
     delta = dt;
 
+    /* Always centre pacman, if collided, set position to previous centre */
+
     //check direction
+    //edge();
     if (move) {
       switch (direction) {
         case Direction.right:
@@ -299,10 +355,14 @@ class PacMan extends PositionComponent
   @override
   void render(Canvas canvas) {
     canvas.drawRect(size.toRect(), amber);
-    canvas.drawRect(
+
+    /* canvas.drawCircle(Offset(position.x + size.x / 2, position.y + size.y / 2),
+        size.y / 2, amber); */
+
+    /* canvas.drawRect(
       hitb.size.toRect(),
       purple,
-    );
+    ); */
     super.render(canvas);
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:pacman/game/entities/cookie.dart';
 import 'package:pacman/game/entities/mazeblock.dart';
 import 'package:pacman/game/entities/mazespace.dart';
 import 'package:pacman/game/entities/pac.dart';
@@ -9,14 +11,20 @@ import 'package:pacman/utils/scheme.dart';
 
 class Maze extends PositionComponent with HasGameRef {
   late MazeScheme scheme;
-  List<PositionComponent> mazebar = [];
+  static List<PositionComponent> mazebar = [];
   static List<PositionComponent> mazespace = [];
 
-  var blue = Paint()..color = Colors.blue.shade800;
+  var blue = Paint()..color = const Color.fromARGB(255, 8, 52, 107);
   var indigo = Paint()..color = Colors.pink.shade800;
-  var black = Paint()..color = Colors.black;
-  var yellow = Paint()..color = Colors.yellow.shade700;
-  var grey = Paint()..color = Colors.black54;
+  //var black = Paint()..color = Colors.black;
+  var purple = Paint()..color = Colors.purple.shade900;
+  var red = Paint()..color = Colors.red.shade800;
+  var green = Paint()..color = Colors.green.shade800;
+  var white = Paint()..color = Colors.white;
+  var teal = Paint()..color = Colors.tealAccent.shade700;
+  var lime = Paint()..color = Colors.lime.shade600;
+
+  late RectangleHitbox hitb;
 
   Maze();
 
@@ -24,7 +32,7 @@ class Maze extends PositionComponent with HasGameRef {
   void onLoad() {
     scheme = MazeScheme();
     scheme.mazeToBinary();
-    //print(scheme.mazeBinary);
+
     print(scheme.lengthRow); //35
     print(scheme.lengthCol); //50
     //game.size;
@@ -43,7 +51,7 @@ class Maze extends PositionComponent with HasGameRef {
   @override
   void render(Canvas canvas) {
     //render all maze positions
-
+    //canvas.drawRect(hitb.size.toRect(), purple);
     super.render(canvas);
   }
 
@@ -52,8 +60,9 @@ class Maze extends PositionComponent with HasGameRef {
     List<int> row = [];
     PositionComponent poscomp;
     Vector2 pos = Vector2(0, 0);
-    Vector2 siz =
-        Vector2((size.x / scheme.lengthCol), (size.y / scheme.lengthRow));
+    /* Vector2 siz =
+        Vector2((size.x / scheme.lengthCol), (size.y / scheme.lengthRow)); */
+    Vector2 siz = Vector2(12, 10);
     for (int i = 0; i < scheme.mazeBinary.length; i++) {
       //positionalComponent for each item and add to
 
@@ -75,18 +84,88 @@ class Maze extends PositionComponent with HasGameRef {
             bpos: Vector2(pos.x, pos.y),
             bsize: Vector2(siz.x, siz.y),
             mazePos: position,
+            mazeSize: size,
           );
           mazebar.add(poscomp);
 
           //
           add(poscomp);
         } else if (row[j] == 1) {
-          poscomp = MazeSpace(
-              bpos: Vector2(pos.x, pos.y),
-              bsize: Vector2(siz.x, siz.y),
-              paint: grey);
-          mazespace.add(poscomp);
-          //add(poscomp);
+          poscomp = Cookie(
+              pos: Vector2(pos.x + (siz.x / 2) - 1, pos.y + (siz.y / 2) - 1),
+              siz: Vector2(3, 3));
+
+          add(poscomp);
+        } else if (row[j] == 4) {
+          poscomp = MazeBlock(
+            paint: red,
+            bpos: pos,
+            bsize: siz,
+          );
+          mazebar.add(poscomp);
+
+          //
+          add(poscomp);
+        } else if (row[j] == 5) {
+          poscomp = MazeBlock(
+            paint: green,
+            bpos: pos,
+            bsize: siz,
+          );
+          mazebar.add(poscomp);
+
+          //
+          add(poscomp);
+        } else if (row[j] == 6) {
+          poscomp = MazeBlock(
+            paint: purple,
+            bpos: pos,
+            bsize: siz,
+          );
+          mazebar.add(poscomp);
+
+          //
+          add(poscomp);
+        } else if (row[j] == 7) {
+          poscomp = MazeBlock(
+            paint: indigo,
+            bpos: pos,
+            bsize: siz,
+          );
+          mazebar.add(poscomp);
+
+          //
+          add(poscomp);
+        } else if (row[j] == 8) {
+          poscomp = MazeBlock(
+            paint: lime,
+            bpos: pos,
+            bsize: siz,
+          );
+          mazebar.add(poscomp);
+
+          //
+          add(poscomp);
+        } else if (row[j] == 9) {
+          poscomp = MazeBlock(
+            paint: teal,
+            bpos: pos,
+            bsize: siz,
+          );
+          mazebar.add(poscomp);
+
+          //
+          add(poscomp);
+        } else if (row[j] == 10) {
+          poscomp = MazeBlock(
+            paint: white,
+            bpos: pos,
+            bsize: siz,
+          );
+          mazebar.add(poscomp);
+
+          //
+          add(poscomp);
         }
         pos.setValues(siz.x + pos.x + 1, pos.y);
       }
@@ -95,5 +174,3 @@ class Maze extends PositionComponent with HasGameRef {
     }
   }
 }
-
-/* 600 width 800 height */

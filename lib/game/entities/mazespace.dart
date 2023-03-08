@@ -3,12 +3,14 @@ import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flutter/material.dart';
 
 class MazeSpace extends PositionComponent with Tappable, CollisionCallbacks {
   final Paint paint;
   final Vector2 bsize;
   final Vector2 bpos;
-  late RectangleHitbox hitb;
+  //late RectangleHitbox hitb;
+  var purple = Paint()..color = Colors.purple.shade700;
 
   MazeSpace({required this.paint, required this.bsize, required this.bpos})
       : super(priority: 2);
@@ -32,13 +34,15 @@ class MazeSpace extends PositionComponent with Tappable, CollisionCallbacks {
   void onLoad() {
     size = bsize;
     position = bpos;
-    hitb = RectangleHitbox();
-    add(hitb);
+    //hitb = RectangleHitbox();
+    //hitb.isSolid = true;
+    //add(hitb);
   }
 
   @override
   void render(Canvas canvas) {
     canvas.drawRect(size.toRect(), paint);
+    //canvas.drawRect(hitb.size.toRect(), purple);
     super.render(canvas);
   }
 }
