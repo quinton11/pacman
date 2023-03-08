@@ -4,6 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:pacman/game/entities/cookie.dart';
+import 'package:pacman/game/entities/ghost.dart';
 import 'package:pacman/game/entities/mazeblock.dart';
 import 'package:pacman/game/entities/mazespace.dart';
 import 'package:pacman/game/entities/pac.dart';
@@ -161,6 +162,16 @@ class Maze extends PositionComponent with HasGameRef {
             paint: white,
             bpos: pos,
             bsize: siz,
+          );
+          mazebar.add(poscomp);
+
+          //
+          add(poscomp);
+        } else if (row[j] == 11) {
+          poscomp = Ghost(
+            color: white,
+            pos: pos,
+            siz: siz,
           );
           mazebar.add(poscomp);
 

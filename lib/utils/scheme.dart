@@ -15,7 +15,7 @@ class MazeScheme {
     "X XXXXXX X      XXXXXXXXXXXXXXXXXXXXX      XXXXX X",
     "X        XX LLL XXXXXXXXXXXXXXXXXXXXX LLL        X",
     "X XXXXXX XX LFL XXXFFFFFFFFFFFFFFFXXX LFL XXXXXX X",
-    "X        XX LFL XXXFFFFFFFFFFFFFFFXXX LFL        X",
+    "X        XX LFL XXXFFFFFGGGGFFFFFFXXX LFL        X",
     "X XXXXXX XX LLL XXXFFFFFFFFFFFFFFFXXX LLL XXXXXX X",
     "X               XXXXXXXXXXXXXXXXXXXXX            X",
     "XXXXXXXXXXXX XX                       XXXXXXXXXXXX",
@@ -72,7 +72,9 @@ class MazeScheme {
           mazeBinary[i].insert(j, 9);
         } else if (point == "L") {
           mazeBinary[i].insert(j, 10);
-        } else {
+        } else if (point == "G") {
+          mazeBinary[i].insert(j, 11);
+        }else {
           mazeBinary[i].insert(j, 1);
         }
       }

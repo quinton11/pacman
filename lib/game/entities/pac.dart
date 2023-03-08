@@ -11,24 +11,10 @@ import 'package:pacman/game/entities/cookie.dart';
 import 'package:pacman/game/entities/maze.dart';
 import 'package:pacman/game/entities/mazeblock.dart';
 import 'package:pacman/game/entities/mazespace.dart';
+import 'package:pacman/game/entities/movable.dart';
+import 'package:pacman/utils/enums.dart';
 
-enum Direction {
-  right,
-  left,
-  up,
-  down,
-  def,
-}
-
-enum CollideSide {
-  right,
-  left,
-  up,
-  down,
-  def,
-}
-
-class PacMan extends PositionComponent
+class PacMan extends Movable
     with Tappable, KeyboardHandler, CollisionCallbacks, HasGameRef {
   var amber = Paint()..color = Colors.amber.shade600;
   var purple = Paint()..color = Colors.purple.shade700;
@@ -51,61 +37,7 @@ class PacMan extends PositionComponent
       {required this.bsize,
       required this.bpos,
       required this.mazePos,
-      required this.mazeSize})
-      : super(priority: 3);
-
-  bool topCollision(PositionComponent other, Vector2 point, double errMargin) {
-    double pWorldY = position.y + mazePos.y;
-    double oWorldY = other.y + mazePos.y;
-    //Range
-    bool greaterThan = point.y > (oWorldY + other.size.y) - errMargin;
-    bool lessThan = point.y < pWorldY + errMargin;
-
-    if (greaterThan && lessThan) {
-      return true;
-    }
-    return false;
-  }
-
-  bool bottomCollision(
-      PositionComponent other, Vector2 point, double errMargin) {
-    double pWorldY = position.y + mazePos.y;
-    double oWorldY = other.y + mazePos.y;
-    //Range
-    bool greaterThan = point.y > (pWorldY + size.y) - errMargin;
-    bool lessThan = point.y < oWorldY + errMargin;
-
-    if (greaterThan && lessThan) {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool rightCollision(
-      PositionComponent other, Vector2 point, double errMargin) {
-    double pWorldX = position.x + mazePos.x;
-    double oWorldX = other.x + mazePos.x;
-
-    bool greaterThan = point.x > (pWorldX + size.x) - errMargin;
-    bool lessThan = point.x < oWorldX + errMargin;
-    if (greaterThan && lessThan) {
-      return true;
-    }
-    return false;
-  }
-
-  bool leftCollision(PositionComponent other, Vector2 point, double errMargin) {
-    double pWorldX = position.x + mazePos.x;
-    double oWorldX = other.x + mazePos.x;
-
-    bool greaterThan = point.x > (oWorldX + other.size.x) - errMargin;
-    bool lessThan = point.x < pWorldX + errMargin;
-    if (greaterThan && lessThan) {
-      return true;
-    }
-    return false;
-  }
+      required this.mazeSize});
 
   @override
   void onCollisionStart(
@@ -119,7 +51,7 @@ class PacMan extends PositionComponent
       Vector2 point;
       for (int i = 0; i < intersectionPoints.length; i++) {
         point = intersectionPoints.elementAt(i);
-        if (topCollision(other, point, errorMargin)) {
+        if (topCollision(other, point, errorMargin, mazePos)) {
           print("Player collided top");
           //move = false;
           //break;
@@ -138,7 +70,7 @@ class PacMan extends PositionComponent
           position.setValues(position.x, offset);
 
           break;
-        } else if (bottomCollision(other, point, errorMargin)) {
+        } else if (bottomCollision(other, point, errorMargin, mazePos)) {
           print("Player collided bottom");
           //move = false;
           //break;
@@ -158,7 +90,7 @@ class PacMan extends PositionComponent
           position.setValues(position.x, offset);
 
           break;
-        } else if (rightCollision(other, point, errorMargin)) {
+        } else if (rightCollision(other, point, errorMargin, mazePos)) {
           print("Player collided right");
           //move = false;
           //break;
@@ -178,10 +110,7 @@ class PacMan extends PositionComponent
           position.setValues(offset, position.y);
 
           break;
-
-          /* Check if position center x is within +-.5 of other center
-        If so then set move to false else set direction to previous direction   */
-        } else if (leftCollision(other, point, errorMargin)) {
+        } else if (leftCollision(other, point, errorMargin, mazePos)) {
           print("Player collided left");
           //move = false;
           //break;
@@ -212,9 +141,7 @@ class PacMan extends PositionComponent
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     if (other is Cookie) {
       parent!.remove(other);
-    } /* else {
-      collided = true;
-    } */
+    }
     super.onCollision(intersectionPoints, other);
   }
 
@@ -246,11 +173,9 @@ class PacMan extends PositionComponent
     super.onKeyEvent(event, keysPressed);
 
     if (event.runtimeType == RawKeyDownEvent) {
-      //move = true;
       switch (event.logicalKey.keyLabel) {
         case "Arrow Left":
           if (direction != Direction.left) {
-            collided = false;
             move = true;
             prevDirection = direction;
             print("Moving");
@@ -263,13 +188,10 @@ class PacMan extends PositionComponent
           break;
         case "Arrow Right":
           if (direction != Direction.right) {
-            collided = false;
             move = true;
 
             prevDirection = direction;
             print("Moving");
-
-            //viableSpace();
           }
 
           direction = Direction.right;
@@ -277,7 +199,6 @@ class PacMan extends PositionComponent
           break;
         case "Arrow Up":
           if (direction != Direction.up) {
-            collided = false;
             move = true;
 
             prevDirection = direction;
@@ -356,13 +277,6 @@ class PacMan extends PositionComponent
   void render(Canvas canvas) {
     canvas.drawRect(size.toRect(), amber);
 
-    /* canvas.drawCircle(Offset(position.x + size.x / 2, position.y + size.y / 2),
-        size.y / 2, amber); */
-
-    /* canvas.drawRect(
-      hitb.size.toRect(),
-      purple,
-    ); */
     super.render(canvas);
   }
 }
