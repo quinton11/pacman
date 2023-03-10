@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 
@@ -8,9 +6,9 @@ import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pacman/game/entities/cookie.dart';
-import 'package:pacman/game/entities/maze.dart';
+
 import 'package:pacman/game/entities/mazeblock.dart';
-import 'package:pacman/game/entities/mazespace.dart';
+
 import 'package:pacman/game/entities/movable.dart';
 import 'package:pacman/utils/enums.dart';
 
@@ -25,9 +23,11 @@ class PacMan extends Movable
   bool collided = false;
   bool move = true;
   bool start = true;
+  bool collideEnd = false;
   double delta = 0;
   late Direction direction = Direction.def;
   late Direction prevDirection = Direction.def;
+  Vector2 lastViable = Vector2.zero();
 
   double speed = 55;
 
@@ -47,6 +47,10 @@ class PacMan extends Movable
     double hitoff = 2;
     bool inCentre = false;
     if (other is MazeBlock) {
+      //collided = true;
+      /* if (collideEnd) {
+        collideEnd = false;
+      } */
       print("On Collision Start");
       Vector2 point;
       for (int i = 0; i < intersectionPoints.length; i++) {
@@ -63,11 +67,12 @@ class PacMan extends Movable
           if (inCentre) {
             print("In centre");
             move = false;
-            collided = true;
+            //collided = true;
           } else {
             direction = prevDirection;
           }
           position.setValues(position.x, offset);
+          lastViable.setValues(position.x, offset);
 
           break;
         } else if (bottomCollision(other, point, errorMargin, mazePos)) {
@@ -83,11 +88,12 @@ class PacMan extends Movable
           if (inCentre) {
             print("In centre");
             move = false;
-            collided = true;
+            //collided = true;
           } else {
             direction = prevDirection;
           }
           position.setValues(position.x, offset);
+          lastViable.setValues(position.x, offset);
 
           break;
         } else if (rightCollision(other, point, errorMargin, mazePos)) {
@@ -103,11 +109,12 @@ class PacMan extends Movable
           if (inCentre) {
             print("In centre");
             move = false;
-            collided = true;
+            //collided = true;
           } else {
             direction = prevDirection;
           }
           position.setValues(offset, position.y);
+          lastViable.setValues(offset, position.y);
 
           break;
         } else if (leftCollision(other, point, errorMargin, mazePos)) {
@@ -123,11 +130,12 @@ class PacMan extends Movable
           if (inCentre) {
             print("In centre");
             move = false;
-            collided = true;
+            //collided = true;
           } else {
             direction = prevDirection;
           }
           position.setValues(offset, position.y);
+          lastViable.setValues(offset, position.y);
 
           break;
         }
@@ -138,9 +146,32 @@ class PacMan extends Movable
   }
 
   @override
+  void onCollisionEnd(PositionComponent other) {
+    if (other is MazeBlock) {
+      print("CollisionEnd");
+      collided = false;
+      //collideEnd = true;
+    }
+    super.onCollisionEnd(other);
+  }
+
+  @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     if (other is Cookie) {
       parent!.remove(other);
+    } else if (other is MazeBlock) {
+      print("Collided with Block");
+      print(collided);
+      if (!collided) {
+        collided = true;
+        print("Last collision ended successfully");
+      } else {
+        //collided is true and end collided wasnt called
+        print("Still in MazeBlock from last collision");
+        //set pacman position to last viable position
+        position.setValues(lastViable.x, lastViable.y);
+        move = false;
+      }
     }
     super.onCollision(intersectionPoints, other);
   }

@@ -1,12 +1,9 @@
-import 'dart:ui';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:pacman/game/entities/cookie.dart';
 import 'package:pacman/game/entities/ghost.dart';
 import 'package:pacman/game/entities/mazeblock.dart';
-import 'package:pacman/game/entities/mazespace.dart';
 import 'package:pacman/game/entities/pac.dart';
 import 'package:pacman/utils/scheme.dart';
 
