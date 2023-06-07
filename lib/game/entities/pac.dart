@@ -6,6 +6,7 @@ import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pacman/game/entities/cookie.dart';
+import 'package:pacman/game/entities/maze.dart';
 
 import 'package:pacman/game/entities/mazeblock.dart';
 
@@ -22,17 +23,14 @@ class PacMan extends Movable
   final Vector2 mazeSize;
   bool collided = false;
   bool move = true;
-  bool start = true;
-  bool collideEnd = false;
   double delta = 0;
+  late double xmin, xmax;
+  late double ymin, ymax;
   late Direction direction = Direction.def;
   late Direction prevDirection = Direction.def;
   Vector2 lastViable = Vector2.zero();
-
-  double speed = 55;
-
+  double speed = 65;
   late RectangleHitbox hitb;
-  late CollideSide collideSide = CollideSide.def;
   PacMan(
       {required this.bsize,
       required this.bpos,
@@ -47,18 +45,13 @@ class PacMan extends Movable
     double hitoff = 2;
     bool inCentre = false;
     if (other is MazeBlock) {
-      //collided = true;
-      /* if (collideEnd) {
-        collideEnd = false;
-      } */
       print("On Collision Start");
       Vector2 point;
       for (int i = 0; i < intersectionPoints.length; i++) {
         point = intersectionPoints.elementAt(i);
         if (topCollision(other, point, errorMargin, mazePos)) {
           print("Player collided top");
-          //move = false;
-          //break;
+          //Player collided top
           offset = other.position.y + other.size.y + 1;
           inCentre = (position.x + size.x / 2) >=
                   (other.position.x + other.size.x / 2 - hitoff) &&
@@ -67,7 +60,6 @@ class PacMan extends Movable
           if (inCentre) {
             print("In centre");
             move = false;
-            //collided = true;
           } else {
             direction = prevDirection;
           }
@@ -77,8 +69,7 @@ class PacMan extends Movable
           break;
         } else if (bottomCollision(other, point, errorMargin, mazePos)) {
           print("Player collided bottom");
-          //move = false;
-          //break;
+
           offset = other.position.y - other.size.y - 1;
 
           inCentre = (position.x + size.x / 2) >=
@@ -88,7 +79,6 @@ class PacMan extends Movable
           if (inCentre) {
             print("In centre");
             move = false;
-            //collided = true;
           } else {
             direction = prevDirection;
           }
@@ -98,8 +88,7 @@ class PacMan extends Movable
           break;
         } else if (rightCollision(other, point, errorMargin, mazePos)) {
           print("Player collided right");
-          //move = false;
-          //break;
+
           offset = other.position.x - other.size.x - 1;
 
           inCentre = (position.y + size.y / 2) >=
@@ -109,7 +98,6 @@ class PacMan extends Movable
           if (inCentre) {
             print("In centre");
             move = false;
-            //collided = true;
           } else {
             direction = prevDirection;
           }
@@ -119,8 +107,7 @@ class PacMan extends Movable
           break;
         } else if (leftCollision(other, point, errorMargin, mazePos)) {
           print("Player collided left");
-          //move = false;
-          //break;
+
           offset = other.position.x + other.size.x + 1;
 
           inCentre = (position.y + size.y / 2) >=
@@ -130,7 +117,6 @@ class PacMan extends Movable
           if (inCentre) {
             print("In centre");
             move = false;
-            //collided = true;
           } else {
             direction = prevDirection;
           }
@@ -150,7 +136,6 @@ class PacMan extends Movable
     if (other is MazeBlock) {
       print("CollisionEnd");
       collided = false;
-      //collideEnd = true;
     }
     super.onCollisionEnd(other);
   }
@@ -161,7 +146,6 @@ class PacMan extends Movable
       parent!.remove(other);
     } else if (other is MazeBlock) {
       print("Collided with Block");
-      print(collided);
       if (!collided) {
         collided = true;
         print("Last collision ended successfully");
@@ -177,31 +161,46 @@ class PacMan extends Movable
   }
 
   @override
-  void onLoad() {
+  Future<void> onLoad() async {
     position = bpos;
     size = bsize;
     anchor = Anchor.topLeft;
     hitb = RectangleHitbox();
     hitb.collisionType = CollisionType.active;
     purple.style = PaintingStyle.stroke;
+
     add(hitb);
+
+    await parent!.loaded;
+    if (parent!.isLoaded) {
+      print(Maze.mazebar[0].position);
+      print(Maze.mazebar[Maze.mazebar.length - 1].position);
+      xmin = 0.0;
+      ymin = 0.0;
+      PositionComponent temp = Maze.mazebar[Maze.mazebar.length - 1];
+      xmax = temp.position.x + temp.size.x;
+      ymax = temp.position.y + temp.size.y;
+    }
   }
 
+  //Spawn at opposite side if pass edge
   void edge() {
-    if (position.x <= 0) {
-      position.x = mazeSize.x - 1;
-    } else if (position.x + size.x >= mazeSize.x) {
+    if (position.x <= xmin) {
+      position.x = xmax - size.x - 1;
+    } else if (position.x + size.x >= xmax) {
       position.x = 1;
-    } else if (position.y + size.y >= mazeSize.y) {
+    } else if (position.y + size.y >= ymax) {
       position.y = 1;
-    } else if (position.y <= 0) {
-      position.y = mazeSize.y - 1;
+    } else if (position.y <= ymin) {
+      position.y = ymax - size.y - 1;
     }
   }
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     super.onKeyEvent(event, keysPressed);
+    print(Maze.mazebar[0].position);
+    print(Maze.mazebar[Maze.mazebar.length - 1].position);
 
     if (event.runtimeType == RawKeyDownEvent) {
       switch (event.logicalKey.keyLabel) {
@@ -210,8 +209,6 @@ class PacMan extends Movable
             move = true;
             prevDirection = direction;
             print("Moving");
-
-            //viableSpace();
           }
 
           direction = Direction.left;
@@ -234,8 +231,6 @@ class PacMan extends Movable
 
             prevDirection = direction;
             print("Moving");
-
-            //viableSpace();
           }
 
           direction = Direction.up;
@@ -247,7 +242,6 @@ class PacMan extends Movable
             move = true;
 
             print("Moving");
-            //viableSpace();
           }
 
           direction = Direction.down;
@@ -264,10 +258,8 @@ class PacMan extends Movable
     double dy = 0;
     delta = dt;
 
-    /* Always centre pacman, if collided, set position to previous centre */
-
     //check direction
-    //edge();
+    edge();
     if (move) {
       switch (direction) {
         case Direction.right:
@@ -293,14 +285,12 @@ class PacMan extends Movable
 
     position.setValues(position.x + dx, position.y + dy);
 
-    //move = true;
     super.update(dt);
   }
 
   @override
   bool onTapDown(TapDownInfo info) {
     print("Pac tapped");
-    //position.x += 5;
     return true;
   }
 

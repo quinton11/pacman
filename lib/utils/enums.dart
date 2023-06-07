@@ -13,3 +13,5 @@ enum CollideSide {
   down,
   def,
 }
+
+enum GhostState { scatter, chase, frightened, eatern }
