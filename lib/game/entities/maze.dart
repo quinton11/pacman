@@ -31,12 +31,12 @@ class Maze extends PositionComponent with HasGameRef {
     scheme = MazeScheme();
     scheme.mazeToBinary();
 
-    print(scheme.lengthRow); //35
-    print(scheme.lengthCol); //50
+    //print(scheme.lengthRow); //35
+    //print(scheme.lengthCol); //50
     //game.size;
     anchor = Anchor.topLeft;
-    print(game.size);
-    print(game.canvasSize);
+    //print(game.size);
+    //print(game.canvasSize);
 
     size = Vector2(600, 380);
     double sizesubx = (game.size.x / 2) - (size.x / 2);

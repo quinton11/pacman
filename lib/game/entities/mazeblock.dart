@@ -16,7 +16,7 @@ class MazeBlock extends PositionComponent with Tappable, CollisionCallbacks {
   @override
   bool onTapDown(TapDownInfo info) {
     super.onTapDown(info);
-    print("Tapped ${position} , ${size}");
+    //print("Tapped ${position} , ${size}");
 
     return true;
   }

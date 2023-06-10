@@ -1,7 +1,7 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:pacman/game/entities/pac.dart';
+//import 'package:pacman/game/entities/pac.dart';
 
 class Cookie extends PositionComponent with CollisionCallbacks {
   final Vector2 pos;

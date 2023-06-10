@@ -1,7 +1,7 @@
-import 'dart:ui';
+//import 'dart:ui';
 
 import 'package:flame/events.dart';
-import 'package:flame/flame.dart';
+//import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:pacman/game/entities/maze.dart';
@@ -18,7 +18,6 @@ class PacGame extends FlameGame
 
   @override
   Color backgroundColor() {
-    // TODO: implement backgroundColor
     return Colors.black;
   }
 
@@ -30,7 +29,7 @@ class PacGame extends FlameGame
 
   @override
   void onTapDown(int pointerId, TapDownInfo info) {
-    print("On tap");
+    //print("On tap");
     super.onTapDown(pointerId, info);
   }
 }
